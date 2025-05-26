@@ -1,0 +1,4 @@
+
+MAGIC = b"@#$%"
+HEADER_SIZE = 8
+MSG_ID_PREFIX = "HASS"

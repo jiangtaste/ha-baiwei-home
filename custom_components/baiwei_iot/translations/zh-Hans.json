@@ -1,0 +1,15 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "连接君启智家网关",
+        "data": {
+          "serial_number": "网关序列号",
+          "host": "网关IP",
+          "port": "网关端口"
+        }
+      }
+    }
+  },
+  "title": "君启智家"
+}

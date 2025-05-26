@@ -1,0 +1,15 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to JunQi Smart Home Gateway",
+        "data": {
+          "serial_number": "Serial Number",
+          "host": "Host",
+          "port": "Port"
+        }
+      }
+    }
+  },
+  "title": "JunQi Smart Home"
+}
