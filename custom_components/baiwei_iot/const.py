@@ -4,7 +4,8 @@ DOMAIN = "baiwei_iot"
 
 PLATFORMS = [
     "switch",
-    "climate"
+    "climate",
+    "cover"
 ]
 
 class GatewayPlatform(str, Enum):
