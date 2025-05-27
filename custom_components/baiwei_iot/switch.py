@@ -45,7 +45,8 @@ class JQSwitch(SwitchEntity):
         # 设备名称
         self._attr_name = self._device["device_name"] or self._device["product_name"]
 
-        self._is_on = self._device["device_status"]["state"] == "on"
+        # 状态
+        self.status = self._device["device_status"]
 
         # 其他属性
         self._attr_device_info = {
@@ -61,7 +62,7 @@ class JQSwitch(SwitchEntity):
 
     @property
     def is_on(self):
-        return self._is_on
+        return self.status["state"] == "on"
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self._client.device_service.set_state({
@@ -78,7 +79,3 @@ class JQSwitch(SwitchEntity):
                 "state": "off"
             }
         })
-
-    async def update_state(self, new_status: dict):
-        self._is_on = new_status.get("state") == "on"
-        self.async_write_ha_state()

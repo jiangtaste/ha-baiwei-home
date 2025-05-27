@@ -52,7 +52,7 @@ MODE_TO_STATE = {
     MODE_FAN_ONLY: HVACMode.FAN_ONLY
 }
 
-STATE_TO_MODE =  {v: k for k, v in MODE_TO_STATE.items()}
+STATE_TO_MODE = {v: k for k, v in MODE_TO_STATE.items()}
 
 WIND_LOW = "l"
 WIND_MEDIUM = "m"
@@ -92,15 +92,7 @@ class JQClimate(ClimateEntity):
         self._attr_target_temperature_step = 1.0
 
         # STATES
-
-        # h, m, l
-        self._fan_mode = FAN_TO_STATE[self._device["device_status"]["wind_level"]]
-        # off, cool, wind, heat, dehumidify
-        self._hvac_mode = MODE_TO_STATE[self._device["device_status"]["sys_mode"]]
-        # target temp
-        self._target_temperature = self._device["device_status"]["coolpoint"] / 100
-        # current temp
-        self._current_temperature = self._device["device_status"]["curr_temp"] / 100
+        self.status = self._device["device_status"]
 
         # 其他属性
         self._attr_device_info = {
@@ -120,19 +112,23 @@ class JQClimate(ClimateEntity):
 
     @property
     def current_temperature(self):
-        return self._current_temperature
+        # current temp
+        return self.status["curr_temp"] / 100
 
     @property
     def target_temperature(self):
-        return self._target_temperature
+        # target temp
+        return self.status["coolpoint"] / 100
 
     @property
     def hvac_mode(self):
-        return self._hvac_mode
+        # off, cool, wind, heat, dehumidify
+        return MODE_TO_STATE[self.status["sys_mode"]]
 
     @property
     def fan_mode(self):
-        return self._fan_mode
+        # h, m, l
+        return FAN_TO_STATE[self.status["wind_level"]]
 
     async def async_set_temperature(self, **kwargs):
         logger.debug(f"async_set_temperature: {kwargs}")
@@ -164,14 +160,3 @@ class JQClimate(ClimateEntity):
                 "wind_level": STATE_TO_FAN[fan_mode]
             }
         })
-
-    async def update_state(self, new_status: dict):
-        logger.debug(f"update state: {new_status}")
-
-        self._fan_mode = FAN_TO_STATE[new_status["wind_level"]]
-        self._hvac_mode = MODE_TO_STATE[new_status["sys_mode"]]
-        self._target_temperature = new_status["coolpoint"]  / 100
-        self._current_temperature = new_status["curr_temp"] / 100
-
-        self.async_write_ha_state()
-

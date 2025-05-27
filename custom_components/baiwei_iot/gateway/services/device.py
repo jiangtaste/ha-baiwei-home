@@ -89,12 +89,12 @@ class DeviceService:
             device_status = device["device_status"]
 
             entity = self._entity_map.get(device_id)
-
             if entity is None:
                 logger.warning(f"sync_state: no entity registered for device_id={device_id}")
                 return
 
-            await entity.update_state(device_status)
+            entity.status.update(device_status)
+            entity.async_write_ha_state()
 
             logger.debug(f"sync_state success: {state}")
 

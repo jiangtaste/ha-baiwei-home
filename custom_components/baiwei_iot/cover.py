@@ -50,11 +50,8 @@ class JQCover(CoverEntity):
                 CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE | CoverEntityFeature.STOP | CoverEntityFeature.SET_POSITION
         )
 
-        # 属性
-        self._status = self._device["device_status"]
-
-        self._is_closed = self._status["state"] == "off"
-        self._current_cover_position = self._status["level"]
+        # 状态
+        self.status = self._device["device_status"]
 
         # 其他属性
         self._attr_device_info = {
@@ -70,11 +67,11 @@ class JQCover(CoverEntity):
 
     @property
     def is_closed(self) -> bool:
-        return self._is_closed
+        return self.status["state"] == "off"
 
     @property
     def current_cover_position(self) -> int:
-        return self._current_cover_position
+        return self.status["level"]
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         await self._client.device_service.set_state({
@@ -101,10 +98,6 @@ class JQCover(CoverEntity):
             "device_id": self._device["device_id"],
             "device_status": {"level": position}
         })
-
-    async def update_state(self, new_status: dict):
-        self._status.update(new_status)
-        self.async_write_ha_state()
 
     async def reverse_motor(self):
         # 反转电机方向
