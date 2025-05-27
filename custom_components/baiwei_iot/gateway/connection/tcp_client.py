@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 from collections import defaultdict
 
 from typing import Callable, Awaitable
@@ -7,6 +8,7 @@ from typing import Callable, Awaitable
 from ..consts import HEADER_SIZE, MAGIC
 from ..utils import generate_request
 
+logger = logging.getLogger(__name__)
 
 class AsyncTcpClient:
     def __init__(self, host: str, port: int):
@@ -30,31 +32,31 @@ class AsyncTcpClient:
                 header = await self.reader.readexactly(HEADER_SIZE)
                 header_magic, content_length_hex = header[:4], header[4:8]
                 if header_magic != MAGIC:
-                    print("Invalid header, skipped.")
+                    logger.debug("Invalid header, skipped.")
                     continue
 
                 try:
                     body_length = int(content_length_hex, 16) - HEADER_SIZE
                 except ValueError:
-                    print(f"Invalid content length: {content_length_hex}")
+                    logger.debug(f"Invalid content length: {content_length_hex}")
                     continue
 
                 if body_length < 0:
-                    print(f"Invalid body length: {body_length}")
+                    logger.debug(f"Invalid body length: {body_length}")
                     continue
 
                 body_bytes = await self.reader.readexactly(body_length)
-                print(f"Received raw body: {body_bytes}")
+                logger.debug(f"Received raw body: {body_bytes}")
 
                 try:
                     message = json.loads(body_bytes.decode("utf-8"))
                 except json.JSONDecodeError as e:
-                    print("Failed to decode JSON:", e)
+                    logger.debug("Failed to decode JSON:", e)
                     continue
 
                 msg_id = message.get("msg_id")
                 if msg_id is None:
-                    print("Received message without msg_id:", message)
+                    logger.debug("Received message without msg_id:", message)
                     continue
 
                 # 判断是否为中间响应（是否是聚合响应的一部分）
@@ -72,15 +74,15 @@ class AsyncTcpClient:
                     elif self._on_report:
                         await self._on_report(result)
                     else:
-                        print(f"Unmatched response: {result}")
+                        logger.debug(f"Unmatched response: {result}")
                 else:
                     self._response_end_flags[msg_id] = False
 
 
         except asyncio.TimeoutError:
-            print("Connection closed by server")
+            logger.debug("Connection closed by server")
         except Exception as e:
-            print("Error receiving data:", e)
+            logger.debug("Error receiving data:", e)
 
     def _merge_multipart_messages(self, msg_id: str) -> dict:
         messages = self._response_buffers.pop(msg_id, [])
