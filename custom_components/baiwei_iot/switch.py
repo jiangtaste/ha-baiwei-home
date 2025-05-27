@@ -7,7 +7,7 @@ from homeassistant.components.switch import SwitchEntity, SwitchDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from .const import DOMAIN, GatewayPlatform
 from .gateway.client import GatewayClient
 
 logger = logging.getLogger(__name__)
@@ -16,12 +16,12 @@ logger = logging.getLogger(__name__)
 async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     client: GatewayClient = hass.data[DOMAIN][entry.entry_id]
 
-    devices, states = await client.get_devices("On/Off Light")
+    devices, states = await client.get_devices(GatewayPlatform.ON_OFF_LIGHT)
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}
 
-    logger.debug(f"get switch devices: {json.dumps(devices)}")
-    logger.debug(f"get switch states: {json.dumps(states)}")
+    logger.debug(f"get devices: {json.dumps(devices)}")
+    logger.debug(f"get states: {json.dumps(states)}")
 
     switches = []
     for device in devices:

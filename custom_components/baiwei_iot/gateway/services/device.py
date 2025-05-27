@@ -13,7 +13,6 @@ class DeviceService:
     def __init__(self, gateway_service: GatewayService):
         self.gateway_service = gateway_service
         self._devices = {}
-        self._states = {}
 
         self._entity_map = {}  # device_id -> home assistant entity
 
@@ -70,36 +69,37 @@ class DeviceService:
         # Window Covering Device
         res = await self.gateway_service.send("control_mgmt/device_state_get", {"device": {"type": platform}})
         states = res["device_list"]
-        logger.debug("device states", json.dumps(states))
-        return states
+        logger.debug(f"fetch device state: {json.dumps(states)}", )
 
-    async def get_state(self, device_id: str):
-        # "AC gateway"
-        # "Air Box"
-        # "BW Cateye"
-        return self._states.get(device_id)
+        return states
 
     async def set_state(self, device: dict):
         state = await self.gateway_service.send("control_mgmt/device_control", {"msg_type": "set", "device": device})
+        logger.debug(f"set_state, device: {device}, state: {state}")
 
         # 同步本地状态缓存
         await self.sync_state(state)
 
     async def sync_state(self, state: dict):
+        logger.debug(f"sync_state: {state}")
+
         try:
             device = state["device"]
             device_id = device["device_id"]
             device_status = device["device_status"]
-            self._states[device_id] = device_status
-            logger.debug(f"Device States: {self._states}")
 
-            # 更新 entry status
-            entity = self._entity_map[device_id]
-            if entity:
-                await entity.update_state(device_status)
-        except (TypeError, KeyError) as e:
-            # 可以加入日志记录
-            logger.error(e)
+            entity = self._entity_map.get(device_id)
+
+            if entity is None:
+                logger.warning(f"sync_state: no entity registered for device_id={device_id}")
+                return
+
+            await entity.update_state(device_status)
+
+            logger.debug(f"sync_state success: {state}")
+
+        except Exception as e:
+            logger.exception(f"gateway sync state error: {state}, {e}")
 
     def register_entry(self, device_id: int, entity):
         self._entity_map[device_id] = entity
