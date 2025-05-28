@@ -8,6 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, GatewayPlatform
+from .entity import BaiweiEntity
 from .gateway.client import GatewayClient
 
 logger = logging.getLogger(__name__)
@@ -29,52 +30,32 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
         if device_id in states_map:
             logger.debug(f"{device_id}: {states_map[device_id]}")
             device["device_status"] = states_map[device_id]
-        switches.append(JQSwitch(client, device))
+        switches.append(BaiweiSwitch(client, device))
 
     async_add_entities(switches)
 
+    lang = hass.config.language
+    logger.debug(f"lang: {lang}")
 
-class JQSwitch(SwitchEntity):
-    def __init__(self, client, device):
-        self._client = client
-        self._device = device
-
-        # 唯一ID，建议使用设备唯一标识，防止重复
-        self._attr_unique_id = str(self._device["device_id"])
-
-        # 设备名称
-        self._attr_name = self._device["device_name"] or self._device["product_name"]
-
-        # 状态
-        self.status = self._device["device_status"]
-
-        # 其他属性
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, device.get("mac"))},
-            "name": f"智能开关 {device.get("model")}",
-            "model": device.get("model"),
-            "manufacturer": "Baiwei",  # 根据实际填写
-            "sw_version": device.get("soft_ver"),
-            "hw_version": device.get("hard_ver"),
-        }
-
-        self._client.device_service.register_entry(self._device["device_id"], self)
+class BaiweiSwitch(SwitchEntity, BaiweiEntity):
+    def __init__(self, gateway, device):
+        super().__init__(gateway, device)
 
     @property
     def is_on(self):
         return self.status["state"] == "on"
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        await self._client.device_service.set_state({
-            "device_id": self._device["device_id"],
+        await self.gateway.device_service.set_state({
+            "device_id": self.device_id,
             "device_status": {
                 "state": "on"
             }
         })
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        await self._client.device_service.set_state({
-            "device_id": self._device["device_id"],
+        await self.gateway.device_service.set_state({
+            "device_id": self.device_id,
             "device_status": {
                 "state": "off"
             }

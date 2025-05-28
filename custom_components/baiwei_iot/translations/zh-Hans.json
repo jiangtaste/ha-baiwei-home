@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "连接君启智家网关",
+        "title": "连接君启智能家居网关",
         "data": {
           "serial_number": "网关序列号",
           "host": "网关IP",

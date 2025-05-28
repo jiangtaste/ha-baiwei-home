@@ -80,23 +80,30 @@ class DeviceService:
         # 同步本地状态缓存
         await self.sync_state(state)
 
+    async def call_scene(self, scene_id: int):
+        state = await self.gateway_service.send("scene_mgmt/scene_exe", {"msg_type": "set", "scene": {"id": scene_id}})
+        logger.debug(f"call_scene, scene_id: {scene_id}, state: {state}")
+
     async def sync_state(self, state: dict):
         logger.debug(f"sync_state: {state}")
 
         try:
-            device = state["device"]
-            device_id = device["device_id"]
-            device_status = device["device_status"]
+            device = state.get("device")
+            if device:
+                device_id = device.get("device_id")
+                device_status = device.get("device_status")
 
-            entity = self._entity_map.get(device_id)
-            if entity is None:
-                logger.warning(f"sync_state: no entity registered for device_id={device_id}")
-                return
+                entity = self._entity_map.get(device_id)
+                if entity is None:
+                    logger.warning(f"sync_state: no entity registered for device_id={device_id}")
+                    return
 
-            entity.status.update(device_status)
-            entity.async_write_ha_state()
+                entity.status.update(device_status)
+                entity.async_write_ha_state()
 
-            logger.debug(f"sync_state success: {state}")
+                logger.debug(f"sync_state success: {state}")
+            else:
+                logger.warning(f"didn't get device in state: {state}")
 
         except Exception as e:
             logger.exception(f"gateway sync state error: {state}, {e}")

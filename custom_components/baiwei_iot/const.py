@@ -5,8 +5,11 @@ DOMAIN = "baiwei_iot"
 PLATFORMS = [
     "switch",
     "climate",
-    "cover"
+    "cover",
+    "fan",
+    "button"
 ]
+
 
 class GatewayPlatform(str, Enum):
     ON_OFF_LIGHT = "On/Off Light"
@@ -20,3 +23,16 @@ class GatewayPlatform(str, Enum):
     SCENE_SELECTOR = "Scene Selector"
     WINDOW_COVER = "Window Covering Device"
 
+
+GATEWAY_PLATFORM_MAP = {
+    "On/Off Switch": "开关",
+    "On/Off Light": "灯光",
+    "AC gateway": "中央空调网关",
+    "Air Box": "空气盒子",
+    "BW Cateye": "猫眼",
+    "Floor heat controller": "地暖控制器",
+    "IAS Zone": "人体移动检测",
+    "New wind controller": "新风控制器",
+    "Scene Selector": "场景控制器",
+    "Window Covering Device": "窗帘控制器",
+}
