@@ -35,21 +35,6 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     async_add_entities(fans)
 
 
-WIND_LOW = "l"
-WIND_MEDIUM = "m"
-WIND_HIGH = "h"
-
-FAN_TO_STATE = {
-    WIND_LOW: FAN_LOW,
-    WIND_MEDIUM: FAN_MEDIUM,
-    WIND_HIGH: FAN_HIGH,
-}
-
-STATE_TO_FAN = {v: k for k, v in FAN_TO_STATE.items()}
-
-FAN_MODES = ["low", "medium", "high"]
-
-
 class BaiweiFreshAir(FanEntity, BaiweiEntity):
     def __init__(self, gateway, device):
         super().__init__(gateway, device)
@@ -57,29 +42,36 @@ class BaiweiFreshAir(FanEntity, BaiweiEntity):
 
         # 支持的功能
         self._attr_supported_features = FanEntityFeature.SET_SPEED
-        self._attr_speed_count = 3
 
     @property
     def is_on(self):
-        return self.status.get("state") == "online"
+        return self.status.get("fan_mode") != "off"
 
     @property
     def percentage(self):
-        try:
-            index = FAN_MODES.index(self.status.get("fan_mode"))
-            return (index + 1) * 33
-        except ValueError:
-            return 0
+        return {
+            "off": 0,
+            "low": 33,
+            "medium": 66,
+            "high": 100
+        }.get(self.status.get("fan_mode"), 0)
 
-    async def async_turn_on(self, **kwargs):
-        logger.debug(f"async_turn_on")
+    @property
+    def percentage_step(self):
+        return 33
 
-        await self.gateway.device_service.set_state({
-            "device_id": self.device_id,
-            "device_status": {
-                "state": "online"
-            }
-        })
+    async def async_turn_on(self, percentage: int = None, **kwargs):
+        logger.debug(f"async_turn_on: {percentage}")
+
+        if percentage is not None:
+            await self.async_set_percentage(percentage)
+        else:
+            await self.gateway.device_service.set_state({
+                "device_id": self.device_id,
+                "device_status": {
+                    "fan_mode": "low"
+                }
+            })
 
     async def async_turn_off(self, **kwargs):
         logger.debug(f"async_turn_off")
@@ -87,25 +79,21 @@ class BaiweiFreshAir(FanEntity, BaiweiEntity):
         await self.gateway.device_service.set_state({
             "device_id": self.device_id,
             "device_status": {
-                "state": "offline"
+                "fan_mode": "off"
             }
         })
 
-    async def async_set_percentage(self, percentage: int):
-        logger.debug(f"async_turn_off")
-
-        index = min(2, percentage // 33)
+    async def async_set_percentage(self, percentage):
+        fan_mode = (
+            "off" if percentage == 0 else
+            "low" if percentage <= 33 else
+            "medium" if percentage <= 66 else
+            "high"
+        )
 
         await self.gateway.device_service.set_state({
             "device_id": self.device_id,
             "device_status": {
-                "fan_mode": FAN_MODES[index]
+                "fan_mode": fan_mode
             }
         })
-
-    @property
-    def extra_state_attributes(self):
-        return {
-            "lock_mode": self.status.get("lock_mode"),
-            "temperature": self.status.get("temp") / 100
-        }
