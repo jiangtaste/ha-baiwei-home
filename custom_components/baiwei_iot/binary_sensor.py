@@ -34,7 +34,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
             device["device_status"] = states_map[device_id]
 
         binary_sensors.append(BaiweiMotionSensor(client, device))
-        
+
     async_add_entities(binary_sensors)
 
 
