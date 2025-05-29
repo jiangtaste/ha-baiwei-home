@@ -38,7 +38,6 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
 class BaiweiFreshAir(FanEntity, BaiweiEntity):
     def __init__(self, gateway, device):
         super().__init__(gateway, device)
-        self.gateway = gateway
 
         # 支持的功能
         self._attr_supported_features = FanEntityFeature.SET_SPEED

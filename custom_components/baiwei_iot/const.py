@@ -7,7 +7,8 @@ PLATFORMS = [
     "climate",
     "cover",
     "fan",
-    "button"
+    "button",
+    "sensor"
 ]
 
 
