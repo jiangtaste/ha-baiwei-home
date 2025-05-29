@@ -2,7 +2,6 @@ import json
 import logging
 
 from homeassistant import core
-from homeassistant.components.climate import FAN_LOW, FAN_MEDIUM, FAN_HIGH
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback

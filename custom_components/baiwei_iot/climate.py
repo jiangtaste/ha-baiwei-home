@@ -1,6 +1,5 @@
 import json
 import logging
-from typing import Any
 
 from homeassistant import core
 from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature, HVACMode, FAN_LOW, FAN_MEDIUM, \
