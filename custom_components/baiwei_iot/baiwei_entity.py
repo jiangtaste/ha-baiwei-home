@@ -16,6 +16,7 @@ class BaiweiEntity(Entity):
 
         self._attr_name = device.get("device_name") or device.get("product_name")
         self._attr_unique_id = f"baiwei_{self.device_id}"
+        
         self._attr_device_info = {
             "identifiers": {(DOMAIN, str(device.get("mac")))},
             "name": self._get_localized_name(),

@@ -7,8 +7,8 @@ from homeassistant.helpers.area_registry import async_get as async_get_area_regi
 from .gateway.client import GatewayClient
 from .const import DOMAIN, PLATFORMS
 
-
 logger = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     serial_number = entry.data.get("serial_number")
@@ -23,8 +23,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     await client.device_service.get_devices_from_gateway()
 
-
-
     await client.scene_service.get_scenes()
 
     hass.data.setdefault(DOMAIN, {})
@@ -37,10 +35,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         area_registry.async_get_or_create(room.get("name"))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
-
-
-
 
     return True
 

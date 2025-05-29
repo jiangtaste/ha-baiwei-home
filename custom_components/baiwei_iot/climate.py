@@ -10,7 +10,7 @@ from homeassistant.const import UnitOfTemperature
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, GatewayPlatform
-from .entity import BaiweiEntity
+from .baiwei_entity import BaiweiEntity
 from .gateway.client import GatewayClient
 
 logger = logging.getLogger(__name__)
@@ -35,14 +35,20 @@ async def async_get_central_ac_entities(client: GatewayClient):
     logger.debug(f"got central ac states: {json.dumps(states)}")
 
     climates = []
+
     for device in devices:
         device_attr = device.get("device_attr")
+
+        # 提取内机实体，抛弃网关
         if device_attr == "CentralAC":
             device_id = device.get("device_id")
+
+            # 合并状态
             if device_id in states_map:
                 logger.debug(f"{device_id}: {states_map[device_id]}")
                 device["device_status"] = states_map[device_id]
-            climates.append(BaiweiCentralACClimate(client, device))
+
+            climates.append(BaiweiCentralClimate(client, device))
 
     return climates
 
@@ -56,12 +62,16 @@ async def async_get_floor_heat_entities(client: GatewayClient):
     logger.debug(f"got floor heat states: {json.dumps(states)}")
 
     climates = []
+
     for device in devices:
         device_id = device.get("device_id")
+
+        # 合并状态
         if device_id in states_map:
             logger.debug(f"{device_id}: {states_map[device_id]}")
             device["device_status"] = states_map[device_id]
-        climates.append(BaiweiFloorHeatClimate(client, device))
+
+        climates.append(BaiweiFloorHeatingClimate(client, device))
 
     return climates
 
@@ -95,7 +105,7 @@ FAN_TO_STATE = {
 STATE_TO_FAN = {v: k for k, v in FAN_TO_STATE.items()}
 
 
-class BaiweiCentralACClimate(ClimateEntity, BaiweiEntity):
+class BaiweiCentralClimate(ClimateEntity, BaiweiEntity):
     def __init__(self, gateway, device):
         super().__init__(gateway, device)
 
@@ -170,7 +180,7 @@ class BaiweiCentralACClimate(ClimateEntity, BaiweiEntity):
         })
 
 
-class BaiweiFloorHeatClimate(ClimateEntity, BaiweiEntity):
+class BaiweiFloorHeatingClimate(ClimateEntity, BaiweiEntity):
     def __init__(self, gateway, device):
         super().__init__(gateway, device)
 

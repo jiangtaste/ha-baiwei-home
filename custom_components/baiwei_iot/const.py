@@ -8,7 +8,8 @@ PLATFORMS = [
     "cover",
     "fan",
     "button",
-    "sensor"
+    "sensor",
+    "binary_sensor"
 ]
 
 

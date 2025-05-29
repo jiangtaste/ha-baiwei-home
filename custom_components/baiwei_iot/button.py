@@ -8,7 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .gateway.client import GatewayClient
 from .const import DOMAIN, GatewayPlatform
-from .entity import BaiweiEntity
+from .baiwei_entity import BaiweiEntity
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +24,15 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     logger.debug(f"get scene states: {json.dumps(states)}")
 
     buttons = []
+
     for device in devices:
         device_id = device.get("device_id")
+
+        # 合并状态
         if device_id in states_map:
             logger.debug(f"{device_id}: {states_map[device_id]}")
             device["device_status"] = states_map[device_id]
+        
         buttons.append(BaiweiSceneButton(client, device))
 
     async_add_entities(buttons)

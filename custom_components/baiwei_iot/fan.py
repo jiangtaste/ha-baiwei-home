@@ -8,7 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, GatewayPlatform
-from .entity import BaiweiEntity
+from .baiwei_entity import BaiweiEntity
 from .gateway.client import GatewayClient
 
 logger = logging.getLogger(__name__)
@@ -25,17 +25,21 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     logger.debug(f"got fresh air states: {json.dumps(states)}")
 
     fans = []
+
     for device in devices:
         device_id = device.get("device_id")
+
+        # 合并状态
         if device_id in states_map:
             logger.debug(f"{device_id}: {states_map[device_id]}")
             device["device_status"] = states_map[device_id]
-        fans.append(BaiweiFreshAir(client, device))
+         
+        fans.append(BaiweiFreshAirFan(client, device))
 
     async_add_entities(fans)
 
 
-class BaiweiFreshAir(FanEntity, BaiweiEntity):
+class BaiweiFreshAirFan(FanEntity, BaiweiEntity):
     def __init__(self, gateway, device):
         super().__init__(gateway, device)
 

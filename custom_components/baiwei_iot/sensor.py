@@ -11,7 +11,7 @@ from homeassistant.const import CONCENTRATION_PARTS_PER_MILLION, CONCENTRATION_M
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, GatewayPlatform
-from .entity import BaiweiEntity
+from .baiwei_entity import BaiweiEntity
 from .gateway.client import GatewayClient
 
 logger = logging.getLogger(__name__)
@@ -28,18 +28,22 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     logger.debug(f"got air box states: {json.dumps(states)}")
 
     sensors = []
+
     for device in devices:
         device_id = device.get("device_id")
+
+        # 合并状态
         if device_id in states_map:
             logger.debug(f"{device_id}: {states_map[device_id]}")
             device["device_status"] = states_map[device_id]
 
-        sensors = [
+        # 添加传感器实体
+        sensors.extend([
             BaiweiAirBoxSensor("二氧化碳", CONCENTRATION_PARTS_PER_MILLION, "co2", client, device),
             BaiweiAirBoxSensor("PM2.5", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, "pm25", client, device),
             BaiweiAirBoxSensor("温度", UnitOfTemperature.CELSIUS, "temp", client, device),
             BaiweiAirBoxSensor("湿度", PERCENTAGE, "hum", client, device),
-        ]
+        ])
 
     async_add_entities(sensors)
 

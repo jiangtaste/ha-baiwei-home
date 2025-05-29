@@ -1,4 +1,3 @@
-
 from homeassistant import config_entries
 import voluptuous as vol
 from homeassistant.core import callback
@@ -8,6 +7,7 @@ DATA_SCHEMA = vol.Schema({
     vol.Required("host"): str,
     vol.Required("port"): str,
 })
+
 
 class MyComponentConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for My Component."""
