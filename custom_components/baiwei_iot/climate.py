@@ -58,8 +58,8 @@ async def async_get_floor_heat_entities(client: GatewayClient):
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}
 
-    logger.debug(f"got floor heat devices: {json.dumps(devices)}")
-    logger.debug(f"got floor heat states: {json.dumps(states)}")
+    logger.debug(f"got floor heating devices: {json.dumps(devices)}")
+    logger.debug(f"got floor heating states: {json.dumps(states)}")
 
     climates = []
 

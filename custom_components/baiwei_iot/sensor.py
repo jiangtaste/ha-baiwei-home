@@ -24,8 +24,8 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}
 
-    logger.debug(f"got air box devices: {json.dumps(devices)}")
-    logger.debug(f"got air box states: {json.dumps(states)}")
+    logger.debug(f"got air box sensor devices: {json.dumps(devices)}")
+    logger.debug(f"got air box sensor states: {json.dumps(states)}")
 
     sensors = []
 

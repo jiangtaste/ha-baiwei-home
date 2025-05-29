@@ -21,8 +21,8 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}
 
-    logger.debug(f"get devices: {json.dumps(devices)}")
-    logger.debug(f"get states: {json.dumps(states)}")
+    logger.debug(f"get light switch devices: {json.dumps(devices)}")
+    logger.debug(f"get light switch states: {json.dumps(states)}")
 
     switches = []
 
@@ -33,7 +33,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
         if device_id in states_map:
             logger.debug(f"{device_id}: {states_map[device_id]}")
             device["device_status"] = states_map[device_id]
-            
+
         switches.append(BaiweiSwitch(client, device))
 
     async_add_entities(switches)

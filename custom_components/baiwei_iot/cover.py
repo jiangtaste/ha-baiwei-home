@@ -21,8 +21,8 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}
 
-    logger.debug(f"get devices: {json.dumps(devices)}")
-    logger.debug(f"get states: {json.dumps(states)}")
+    logger.debug(f"get cover devices: {json.dumps(devices)}")
+    logger.debug(f"get cover states: {json.dumps(states)}")
 
     covers = []
 
