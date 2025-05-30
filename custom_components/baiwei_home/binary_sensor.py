@@ -6,9 +6,9 @@ from homeassistant.components.binary_sensor import BinarySensorEntity, BinarySen
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, GatewayPlatform
-from .baiwei_entity import BaiweiEntity
-from .gateway.client import GatewayClient
+from .baiwei.const import DOMAIN, GatewayPlatform
+from .baiwei.baiwei_entity import BaiweiEntity
+from .baiwei.client import GatewayClient
 
 logger = logging.getLogger(__name__)
 

@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to JunQi Smart Home Gateway",
+        "title": "Configurate Baiwei Home",
         "data": {
           "serial_number": "Serial Number",
           "host": "Host",
@@ -11,5 +11,5 @@
       }
     }
   },
-  "title": "JunQi Smart Home"
+  "title": "Baiwei Home"
 }

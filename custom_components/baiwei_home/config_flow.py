@@ -1,15 +1,17 @@
 from homeassistant import config_entries
 import voluptuous as vol
-from .const import DOMAIN
 
-DATA_SCHEMA = vol.Schema({
-    vol.Required("host"): str,
-    vol.Required("port"): str,
-})
+from .baiwei.const import DOMAIN
+
+# 可选语言列表
+LANGUAGES = {
+    "zh": "中文",
+    "en": "English",
+}
 
 
-class MyComponentConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for My Component."""
+class BaiweiHomeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for Baiwei Home."""
 
     VERSION = 1
 
@@ -17,18 +19,18 @@ class MyComponentConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            # 你可以在这里添加校验 host/port/serial_number 的逻辑
             return self.async_create_entry(
-                title=f"君启智家网关",
+                title="Baiwei Home",
                 data=user_input
             )
 
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
-                vol.Required("serial_number"): str,
                 vol.Required("host"): str,
                 vol.Required("port"): int,
+                vol.Optional("serial_number"): str,
+                vol.Optional("language", default="zh"): vol.In(LANGUAGES),
             }),
             errors=errors,
         )

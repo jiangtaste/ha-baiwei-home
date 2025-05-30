@@ -4,8 +4,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.area_registry import async_get as async_get_area_registry
 
-from .gateway.client import GatewayClient
-from .const import DOMAIN, PLATFORMS
+from .baiwei.client import GatewayClient
+from .baiwei.const import DOMAIN, PLATFORMS
 
 logger = logging.getLogger(__name__)
 

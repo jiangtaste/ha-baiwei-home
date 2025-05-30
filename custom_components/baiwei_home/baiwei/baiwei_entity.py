@@ -1,7 +1,19 @@
-from homeassistant.core import DOMAIN
 from homeassistant.helpers.entity import Entity
 
-from custom_components.baiwei_iot.const import GATEWAY_PLATFORM_MAP
+from .const import DOMAIN
+
+GATEWAY_PLATFORM_MAP = {
+    "On/Off Switch": "开关",
+    "On/Off Light": "灯光",
+    "AC baiwei": "中央空调网关",
+    "Air Box": "空气盒子",
+    "BW Cateye": "猫眼",
+    "Floor heat controller": "地暖控制器",
+    "IAS Zone": "人体移动检测",
+    "New wind controller": "新风控制器",
+    "Scene Selector": "场景控制器",
+    "Window Covering Device": "窗帘控制器",
+}
 
 
 class BaiweiEntity(Entity):
@@ -16,7 +28,7 @@ class BaiweiEntity(Entity):
 
         self._attr_name = device.get("device_name") or device.get("product_name")
         self._attr_unique_id = f"baiwei_{self.device_id}"
-        
+
         self._attr_device_info = {
             "identifiers": {(DOMAIN, str(device.get("mac")))},
             "name": self._get_localized_name(),

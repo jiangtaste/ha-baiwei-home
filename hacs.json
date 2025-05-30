@@ -1,4 +1,6 @@
 {
-  "name": "Baiwei iOT",
+  "name": "Baiwei Home",
+  "homeassistant": "2024.4.4",
+  "hacs": "1.34.0",
   "render_readme": true
 }

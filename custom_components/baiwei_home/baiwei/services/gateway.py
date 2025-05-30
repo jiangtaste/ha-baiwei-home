@@ -25,7 +25,7 @@ class GatewayService:
             print(f"Discovered Gateway: {result}")
             payload = self.protocol.unpack(result)
 
-            gateway = payload.get("gateway", {})
+            gateway = payload.get("baiwei", {})
             if not any(gw["sn"] == gateway.get("sn") for gw in self.gateway_list):
                 self.gateway_list.append(gateway)
 
@@ -37,12 +37,12 @@ class GatewayService:
 
         # await self.discovery()
 
-        # gateway = next((item for item in self.gateway_list if item["sn"] == gateway_sn), None)
+        # baiwei = next((item for item in self.gateway_list if item["sn"] == gateway_sn), None)
 
         # 获取到网关信息后，更新protocol
         # await self.protocol.update_gateway_sn(gateway_sn)
 
-        # tcp_client = AsyncTcpClient(gateway.get("ip"), gateway.get("port"))
+        # tcp_client = AsyncTcpClient(baiwei.get("ip"), baiwei.get("port"))
 
         tcp_client = AsyncTcpClient(host, port)
         await tcp_client.connect()

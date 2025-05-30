@@ -4,10 +4,10 @@
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/jiangtaste/hass_baiwei_iot",
-  "domain": "baiwei_iot",
+  "documentation": "https://github.com/jiangtaste/ha-baiwei-home",
+  "domain": "baiwei_home",
   "iot_class": "local_push",
-  "name": "君启智家",
+  "name": "百微智家",
   "requirements": [],
   "version": "1.0.0",
   "translations": [
