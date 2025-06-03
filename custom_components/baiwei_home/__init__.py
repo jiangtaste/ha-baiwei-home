@@ -18,12 +18,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     # 实例化并连接网关
     client = GatewayClient()
 
+    # await client.gateway_service.discovery()
     await client.connect(host, port)
     await client.user_service.login()
-
     await client.device_service.get_devices_from_gateway()
-
-    await client.scene_service.get_scenes()
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = client

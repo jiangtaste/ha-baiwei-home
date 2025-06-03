@@ -18,16 +18,19 @@ class GatewayService:
         self.report_handler = None
 
     async def discovery(self):
-        request = self.protocol.pack("gateway_mgmt/gateway_discovery", {})
-        results = await self.udp_client.broadcast(7103, request)
+        try:
+            request = self.protocol.pack("gateway_mgmt/gateway_discovery", {})
+            results = await self.udp_client.broadcast(7103, request)
 
-        for result in results:
-            print(f"Discovered Gateway: {result}")
-            payload = self.protocol.unpack(result)
+            for result in results:
+                logger.debug(f"Discovered Gateway: {result}")
+                payload = self.protocol.unpack(result)
 
-            gateway = payload.get("baiwei", {})
-            if not any(gw["sn"] == gateway.get("sn") for gw in self.gateway_list):
-                self.gateway_list.append(gateway)
+                gateway = payload.get("baiwei", {})
+                if not any(gw["sn"] == gateway.get("sn") for gw in self.gateway_list):
+                    self.gateway_list.append(gateway)
+        except Exception as e:
+            logger.error(f"Discovery Error: {e}")
 
     async def connect(self, host: str, port: int, report_handler: Callable[[dict], Awaitable[None]]):
         # 关闭已存在链接

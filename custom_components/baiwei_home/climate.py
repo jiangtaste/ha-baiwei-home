@@ -18,14 +18,14 @@ logger = logging.getLogger(__name__)
 async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     client: GatewayClient = hass.data[DOMAIN][entry.entry_id]
 
-    central_ac_climates = await async_get_central_ac_entities(client)
-    async_add_entities(central_ac_climates)
+    central_climates = await async_get_central_climates(client)
+    floor_heating_climates = await async_get_floor_heating(client)
 
-    floor_heat_climates = await async_get_floor_heat_entities(client)
-    async_add_entities(floor_heat_climates)
+    async_add_entities(central_climates)
+    async_add_entities(floor_heating_climates)
 
 
-async def async_get_central_ac_entities(client: GatewayClient):
+async def async_get_central_climates(client: GatewayClient):
     devices, states = await client.get_devices(GatewayPlatform.AC_GATEWAY)
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}
@@ -52,7 +52,7 @@ async def async_get_central_ac_entities(client: GatewayClient):
     return climates
 
 
-async def async_get_floor_heat_entities(client: GatewayClient):
+async def async_get_floor_heating(client: GatewayClient):
     devices, states = await client.get_devices(GatewayPlatform.FLOOR_HEAT)
     # 构建一个 device_id -> device_status 的快速查找字典
     states_map = {state["device_id"]: state["device_status"] for state in states}

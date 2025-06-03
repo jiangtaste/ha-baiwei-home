@@ -15,7 +15,7 @@ PLATFORMS = [
 
 class GatewayPlatform(str, Enum):
     ON_OFF_LIGHT = "On/Off Light"
-    AC_GATEWAY = "AC baiwei"
+    AC_GATEWAY = "AC gateway"
     AIR_BOX = "Air Box"
     BW_CATEYE = "BW Cateye"
     FLOOR_HEAT = "Floor heat controller"

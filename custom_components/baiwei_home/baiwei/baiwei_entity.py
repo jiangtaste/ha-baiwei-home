@@ -5,7 +5,7 @@ from .const import DOMAIN
 GATEWAY_PLATFORM_MAP = {
     "On/Off Switch": "开关",
     "On/Off Light": "灯光",
-    "AC baiwei": "中央空调网关",
+    "AC gateway": "中央空调网关",
     "Air Box": "空气盒子",
     "BW Cateye": "猫眼",
     "Floor heat controller": "地暖控制器",

@@ -57,7 +57,7 @@ class DeviceService:
         return flattened_list
 
     async def fetch_states(self, platform: str):
-        # AC baiwei
+        # AC gateway
         # Air Box
         # BW Cateye
         # Floor heat controller
