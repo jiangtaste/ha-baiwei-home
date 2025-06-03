@@ -9,7 +9,7 @@
   "iot_class": "local_push",
   "name": "百微智家",
   "requirements": [],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "translations": [
     "en",
     "zh-Hans"
