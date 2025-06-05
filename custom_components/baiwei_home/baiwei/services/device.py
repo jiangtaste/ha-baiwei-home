@@ -98,8 +98,7 @@ class DeviceService:
                     logger.warning(f"sync_state: no entity registered for device_id={device_id}")
                     return
 
-                entity.status.update(device_status)
-                entity.async_write_ha_state()
+                entity.update_status(device_status)
 
                 logger.debug(f"sync_state success: {state}")
             else:

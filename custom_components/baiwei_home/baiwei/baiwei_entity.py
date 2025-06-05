@@ -1,6 +1,10 @@
+import logging
+
 from homeassistant.helpers.entity import Entity
 
 from .const import DOMAIN
+
+logger = logging.getLogger(__name__)
 
 GATEWAY_PLATFORM_MAP = {
     "On/Off Switch": "开关",
@@ -24,7 +28,7 @@ class BaiweiEntity(Entity):
         self.device = device
         self.device_id = device.get("device_id")
         self.endpoint = device.get("endpoint")
-        self.status = device.get("device_status")
+        self._status = device.get("device_status")
 
         self._attr_name = device.get("device_name") or device.get("product_name")
         self._attr_unique_id = f"baiwei_{self.device_id}"
@@ -45,3 +49,7 @@ class BaiweiEntity(Entity):
         name = self.device.get("product_name")
 
         return GATEWAY_PLATFORM_MAP.get(name, name)
+
+    def update_status(self, status: dict):
+        self._status.update(status)
+        self.async_write_ha_state()

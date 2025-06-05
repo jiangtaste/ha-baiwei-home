@@ -50,11 +50,11 @@ class BaiweiCurtainCover(CoverEntity, BaiweiEntity):
 
     @property
     def is_closed(self) -> bool:
-        return self.status["state"] == "off"
+        return self._status["state"] == "off"
 
     @property
     def current_cover_position(self) -> int:
-        return self.status["level"]
+        return self._status["level"]
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         await self.gateway.device_service.set_state({

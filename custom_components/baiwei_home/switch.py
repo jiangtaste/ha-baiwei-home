@@ -45,7 +45,7 @@ class BaiweiSwitch(SwitchEntity, BaiweiEntity):
 
     @property
     def is_on(self):
-        return self.status["state"] == "on"
+        return self._status["state"] == "on"
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self.gateway.device_service.set_state({

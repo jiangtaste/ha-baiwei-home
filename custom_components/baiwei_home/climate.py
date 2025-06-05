@@ -128,22 +128,22 @@ class BaiweiCentralClimate(ClimateEntity, BaiweiEntity):
     @property
     def current_temperature(self):
         # current temp
-        return self.status["curr_temp"] / 100
+        return self._status["curr_temp"] / 100
 
     @property
     def target_temperature(self):
         # target temp
-        return self.status["coolpoint"] / 100
+        return self._status["coolpoint"] / 100
 
     @property
     def hvac_mode(self):
         # off, cool, wind, heat, dehumidify
-        return MODE_TO_STATE[self.status["sys_mode"]]
+        return MODE_TO_STATE[self._status["sys_mode"]]
 
     @property
     def fan_mode(self):
         # h, m, l
-        return FAN_TO_STATE[self.status["wind_level"]]
+        return FAN_TO_STATE[self._status["wind_level"]]
 
     async def async_set_temperature(self, **kwargs):
         logger.debug(f"async_set_temperature: {kwargs}")
@@ -200,16 +200,16 @@ class BaiweiFloorHeatingClimate(ClimateEntity, BaiweiEntity):
 
     @property
     def current_temperature(self):
-        return self.status["temp"] / 100
+        return self._status["temp"] / 100
 
     @property
     def target_temperature(self):
-        return self.status["heatpoint"] / 100
+        return self._status["heatpoint"] / 100
 
     @property
     def hvac_mode(self):
         # off, heat
-        return MODE_TO_STATE[self.status["sys_mode"]]
+        return MODE_TO_STATE[self._status["sys_mode"]]
 
     async def async_set_temperature(self, **kwargs):
         logger.debug(f"async_set_temperature: {kwargs}")

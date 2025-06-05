@@ -47,7 +47,7 @@ class BaiweiFreshAirFan(FanEntity, BaiweiEntity):
 
     @property
     def is_on(self):
-        return self.status.get("fan_mode") != "off"
+        return self._status.get("fan_mode") != "off"
 
     @property
     def percentage(self):
@@ -56,7 +56,7 @@ class BaiweiFreshAirFan(FanEntity, BaiweiEntity):
             "low": 33,
             "medium": 66,
             "high": 100
-        }.get(self.status.get("fan_mode"), 0)
+        }.get(self._status.get("fan_mode"), 0)
 
     @property
     def percentage_step(self):

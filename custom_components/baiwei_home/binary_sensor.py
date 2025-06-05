@@ -47,4 +47,4 @@ class BaiweiMotionSensor(BinarySensorEntity, BaiweiEntity):
     @property
     def is_on(self):
         """Return True if motion is detected."""
-        return self.status.get("status") == "on"
+        return self._status.get("status") == "on"

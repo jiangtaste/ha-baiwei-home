@@ -57,7 +57,7 @@ class BaiweiAirBoxSensor(SensorEntity, BaiweiEntity):
 
     @property
     def native_value(self):
-        raw = self.status.get(self._key)
+        raw = self._status.get(self._key)
         if self._key == "temp":
             return raw / 100
         elif self._key == "hum":
