@@ -38,6 +38,7 @@ class BaiweiEntity(Entity):
             "hw_version": device.get("hard_ver"),
         }
 
+    async def async_added_to_hass(self):
         self.gateway.device_service.register_entry(self.device_id, self)
 
     def _get_localized_name(self) -> str:
